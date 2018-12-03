@@ -22,7 +22,7 @@ _class CenterLoss(gluon.HybridBlock):
     def hybrid_forward(self, F, feature, label, centers):
         '''
         :param feature: output feature matrix, mini-batch的输出特征矩阵
-        :param label:input label matrix, mini-batch的输入标签
+        :param label: input label matrix, mini-batch的输入标签
         :param centers: features of class, 类别特征矩阵
         '''
         # 计算label的统计分布（label0:counter0, label1:counter1）
@@ -53,7 +53,7 @@ class CenterLoss(gluon.nn.Block):
         :param feature_size: output feature size, 特征大小
         :param lmbd: lmbd coefficient to control center loss, lmbd系数 用于控制center loss的大小
         '''
-        super(MyCenterLoss, self).__init__(**kwargs)
+        super(CenterLoss, self).__init__(**kwargs)
         self.feature_size = feature_size
         self._lmbd = lmbd
         self.embedding = gluon.nn.Embedding(num_classes, feature_size)
@@ -61,7 +61,7 @@ class CenterLoss(gluon.nn.Block):
     def forward(self, feature, label):
         '''
         :param feature: output feature matrix, mini-batch的输出特征矩阵
-        :param label:input label matrix, mini-batch的输入标签
+        :param label: input label matrix, mini-batch的输入标签
         '''
         # embedding to get label related features 通过嵌入层得到label对应的feature
         embeddings= self.embedding(label)
