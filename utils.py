@@ -63,8 +63,8 @@ def evaluate_accuracy(data_iterator, net, ctx):
 
     features, predicts, labels = [], [], []
     for i, (data, label) in enumerate(data_iterator):
-        data = data.as_in_context(ctx[0])
-        label = label.as_in_context(ctx[0])
+        data = data.as_in_context(ctx)
+        label = label.as_in_context(ctx)
         # forward compute
         output, feature = net(data)
         prediction = nd.argmax(output, axis=1)
