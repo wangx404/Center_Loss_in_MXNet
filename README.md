@@ -1,4 +1,44 @@
 # Center_Loss_in_MXNet
+使用MXNet Gluon实现的Center Loss的另一种方法。
+
+## 背景
+
+本项目的实现源于ShownX实现的[mxnet-center-loss](https://github.com/ShownX/mxnet-center-loss). 然而在阅读代码的过程中，发现Center Loss的实现并不直观。所以我就在思考能否使用其他的方式实现类似的计算过程。在阅读NLP相关的代码时意识到可以使用`gluon.nn.Embedding`代替之前代码中的`Parameter dict`。因为前者也能够实现label到feature的转换，而且输入label得到feature的过程是自动化的。
+
+本项目中的代码大部分来源于[这里](https://github.com/ShownX/mxnet-center-loss).除了修改了原项目中对于center loss的代码之外，其他部分增加了新的注释以便理解，修改了一小部分代码以方便后续的使用。
+
+为了能够理解本项目中的实现和之前有什么不同，你可以查看`center_loss.py`中的原始代码。简单来说，通过一个嵌入层可以直接从label得到对应的feature，而不需要调用pick函数。这样修改后除了看起来pipeline更加清楚之外，Center Loss也能够像一个常规的模型一样被使用。
+
+## 安装依赖
+```
+pip install -r requirements.txt
+```
+
+## 训练
+1. 使用softmax loss训练
+```
+$ python main.py --train --prefix=softmax
+```
+
+2. 使用softmax + center loss训练
+```
+$ python main.py --train --center_loss --prefix=center-loss
+```
+
+## 测试
+1. 使用softmax测试
+```
+$ python main.py --test --prefix=softmax
+```
+
+2. 使用softmax + center loss测试
+```
+$ python main.py --test --prefix=center-loss
+```
+
+**P.S.** 在`main.py`中你可以查看更多的训练/测试选项。例如说你可以调整batch size的大小，更改训练的epoch和学习率等等。想要得到原始论文中类似的特征分布图，则需要在训练或者测试的命令行中增加`--plotting`选项。
+
+# Center_Loss_in_MXNet
 Another kind implementation of center loss using MXNet Gluon.
 
 ## Background
@@ -24,7 +64,6 @@ $ python main.py --train --prefix=softmax
 ```
 $ python main.py --train --center_loss --prefix=center-loss
 ```
-3. Train with softmax + center loss in my own way
 
 ## Test
 1. Test with original softmax
@@ -37,3 +76,4 @@ $ python main.py --test --prefix=softmax
 $ python main.py --test --prefix=center-loss
 ```
 
+**P.S.** In the script `main.py`, you can find more train/test options. For example, you can change batch size, learning rate, whether to gpu for training/testing. If you want to get similar feature map in the origin paper, you can add `--plotting` in command line.
