@@ -4,9 +4,7 @@ import seaborn as sns
 import numpy as np
 import matplotlib.patheffects as PathEffects
 import mxnet as mx
-from mxnet import gluon, image, nd
-import gluonbook as gb
-import os
+from mxnet import nd
 
 
 def plot_features(features, labels, num_classes, fpath='features.png'):
@@ -47,12 +45,32 @@ def plot_features(features, labels, num_classes, fpath='features.png'):
     plt.close()
 
 
-def evaluate_accuracy(data_iterator, net, ctx):
+def knn_search(feature_matrix, features):
+    """
+    Given features and feature matrix, using KNN method to find the nearest class.
+    给定特征矩阵和待搜索的特征之后，使用KNN搜索查询和特征最近的类别。
+    :param feature_matrix: feature matrix 特征矩阵
+    :param features: class uncertained features 待确定类别的特征
+    :return predictions: class predictions 预测类别
+    """
+    predictions = []
+    for feature in features:
+        diff = feature - feature_matrix
+        diff = nd.square(diff)
+        diff = nd.sum(diff, axis=1)
+        prediction = nd.argmin(diff, axis=0)
+        predictions.append(prediction.asscalar())
+    return nd.array(predictions)
+
+
+def evaluate_accuracy(data_iterator, net, center_net, method, ctx):
     '''
     Evaluate model accuracy on data iterator.
     评估函数的准确率并返回用于绘制特征分布的特征数据。
     :param data_iterator: data iterator 数据迭代器
     :param net: model 模型
+    :param center_net: CenterLoss model(value can be None) CenterLoss的模型（可为None）
+    :param method: evaluation method 使用何种评估方法
     :param ctx: ctx
     :return acc.get()[1: accuracy rate 准确率
     :return features: 2d features of input images 输入图片2维特征
@@ -60,6 +78,10 @@ def evaluate_accuracy(data_iterator, net, ctx):
     :return labels: labels of input images 输入图片标签值
     '''
     acc = mx.metric.Accuracy()
+    if center_net != None:
+        feature_matrix = center_net.embedding.weight.data()
+    else:
+        feature_matrix = None
 
     features, predicts, labels = [], [], []
     for i, (data, label) in enumerate(data_iterator):
@@ -67,7 +89,13 @@ def evaluate_accuracy(data_iterator, net, ctx):
         label = label.as_in_context(ctx)
         # forward compute
         output, feature = net(data)
-        prediction = nd.argmax(output, axis=1)
+        if method == "softmax":
+            prediction = nd.argmax(output, axis=1) # ndarray of (batch,)
+        elif method == "knn":
+            prediction = knn_search(feature_matrix, feature)
+        else:
+            raise ValueError("evaluation method can only be softmax/knn")
+
         acc.update(preds=prediction, labels=label)
         # 存储计算的feature，output和label
         features.extend(feature.asnumpy())
