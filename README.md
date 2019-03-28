@@ -7,6 +7,9 @@
 2. 在对模型的准确率进行评估时，默认使用model输出的class prediction进行。在本代码中，额外增加了使用KNN（基于欧氏距离）search进行类别预测和评估。
 3. 增加了一种额外的训练方式，即仅仅使用center lossx进行训练。
 
+## 结果讨论
+
+
 ## 背景
 
 本项目的实现源于ShownX实现的[mxnet-center-loss](https://github.com/ShownX/mxnet-center-loss). 然而在阅读代码的过程中，发现Center Loss的实现并不直观。所以我就在思考能否使用其他的方式实现类似的计算过程。在阅读NLP相关的代码时意识到可以使用`gluon.nn.Embedding`代替之前代码中的`Parameter dict`。因为前者也能够实现label到feature的转换，而且输入label得到feature的过程是自动化的。
@@ -23,26 +26,32 @@ pip install -r requirements.txt
 ## 训练
 1. 使用softmax loss训练
 ```
-$ python main.py --train --prefix=softmax
+$ python main.py --train --prefix=softmax-loss --epochs 30 --lr 0.1 --lr_step 10 --batch_size 128 --num_classes 10 --feature_size 2 --use_gpu True --plotting
 ```
 
 2. 使用softmax + center loss训练
 ```
-$ python main.py --train --center_loss --prefix=center-loss
+$ python main.py --train --center_loss --prefix=center-loss --lmbd 1 --alpha 0.5 --epochs 30 --lr 0.1 --lr_step 10 --batch_size 128 --num_classes 10 --feature_size 2 --use_gpu True --plotting
 ```
 
-## 测试
-1. 使用softmax测试
+3. 在2的基础上使用center loss单独进行训练
 ```
-$ python main.py --test --prefix=softmax
+$ #python main.py --second_train --prefix=center-loss --lmbd 1 --alpha 0.5  --epochs 30 --lr 0.1 --lr_step 10 --batch_size 128 --num_classes 10 --feature_size 2 --use_gpu True --plotting
+```
+**P.S.** 在`main.py`中你可以查看更多的训练/测试选项。例如说你可以调整batch size的大小，更改训练的epoch和学习率等等。想要得到原始论文中类似的特征分布图，则需要在训练或者测试的命令行中增加`--plotting`选项。
+
+## 测试
+1. 使用class prediction进行评估测试
+```
+$ python main.py --test --prefix=center-loss --lmbd 1 --batch_size 128 --num_classes 10 --feature_size 2 --use_gpu True --eval_method softmax
 ```
 
 2. 使用softmax + center loss测试
 ```
-$ python main.py --test --prefix=center-loss
+$ python main.py --test --prefix=center-loss --lmbd 1 --batch_size 128 --num_classes 10 --feature_size 2 --use_gpu True --eval_method knn
 ```
 
-**P.S.** 在`main.py`中你可以查看更多的训练/测试选项。例如说你可以调整batch size的大小，更改训练的epoch和学习率等等。想要得到原始论文中类似的特征分布图，则需要在训练或者测试的命令行中增加`--plotting`选项。
+**P.S.** 使用softmax训练的模型无法使用knn进行评估，因为没有特征矩阵可用。
 
 # Center_Loss_in_MXNet
 Another kind implementation of center loss using MXNet Gluon.
