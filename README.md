@@ -27,7 +27,8 @@ P.S. 通过一系列的试验发现，使用softmax+center loss训练10个epoch�
 P.P.S. 训练参数：epoch=30, lr=0.1, lr_step=10, lr_factor=0.1, batch_size=128, wd=1E-4, lmbd=1, alpha=0.5
 
 3. 不同损失函数训练后模型的feature map如下所示：
-![](/output/)
+![](/output/softmax_train.gif)
+softmax train
 
 ## 背景
 
