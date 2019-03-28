@@ -34,13 +34,15 @@ feature map of training dataset
 feature map of test dataset
 ![](/output/test_feature_map_with_different_loss.jpg)
 
-可以看出，使用softmax进行训练时，feature map呈现为放射状（在交叉熵损失函数的优化下，只要类别间具有能够区分的margin即可）。
-而使用softmax+center loss训练之后，因为center loss会约束features向类中心特征聚集，因此最后feature map呈现为放射状和点簇状的折中状态。
-而经过center loss单独的训练后，feature map中的点簇分布得更加密集。
+可以看出，使用softmax进行训练时，feature map呈现为放射状（在交叉熵损失函数的优化下，只要类别间具有能够区分的margin即可）。使用softmax+center loss训练之后，因为center loss会约束features向类中心特征聚集，因此最后feature map呈现为放射状和点簇状的折中状态。而经过center loss单独的训练后，feature map中的点簇分布得更加密集。
+
+模型在训练集上feature map分布较好，在验证集上相对较差；且在softmax+center loss的基础上使用center loss重新进行训练之后，feature map在验证集上没有特别显著的差异。
 
 P.S. 训练过程中feature map的变化可参照output中的gif文件。
 
 P.P.S. 目前在face recognition中主流的损失函数仍然是softmax的各种改型。添加regulation可以将放射状的feature map约束在更小的范围内；添加基于欧氏距离或者余弦距离的损失可以改变feature map的分布特征；对loss进行分段病添加不同的权重，可以在数据集上实现更好的结果（然而换个数据集就没有卵用了）。
+
+P.P.P.S. 一个有意思的特征分布，本代码和ShownX的代码中4和8两个数字的feature map都位于图中心（在不同的训练中，4和8一直位于正中，而其他的数字在外围的位置则在持续变化。）；而在center loss的原始论文中，十个数字的feature map组成了一个环形。很难说，上述现象是由什么造成的。
 
 ## 背景
 
