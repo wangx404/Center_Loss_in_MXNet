@@ -1,6 +1,12 @@
 # Center_Loss_in_MXNet
 使用MXNet Gluon实现的Center Loss的另一种方法。
 
+## 2019.03.28更新
+
+1. 对CenterLoss进行了略微修改（在center loss计算时，通过hist平衡类别间的损失）以保证其功能和ShownX的保持一致。
+2. 在对模型的准确率进行评估时，默认使用model输出的class prediction进行。在本代码中，额外增加了使用KNN（基于欧氏距离）search进行类别预测和评估。
+3. 增加了一种额外的训练方式，即仅仅使用center lossx进行训练。
+
 ## 背景
 
 本项目的实现源于ShownX实现的[mxnet-center-loss](https://github.com/ShownX/mxnet-center-loss). 然而在阅读代码的过程中，发现Center Loss的实现并不直观。所以我就在思考能否使用其他的方式实现类似的计算过程。在阅读NLP相关的代码时意识到可以使用`gluon.nn.Embedding`代替之前代码中的`Parameter dict`。因为前者也能够实现label到feature的转换，而且输入label得到feature的过程是自动化的。
