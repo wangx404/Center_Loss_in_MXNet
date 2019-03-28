@@ -8,16 +8,26 @@
 3. 增加了一种额外的训练方式，即仅仅使用center lossx进行训练。
 
 ## 结果讨论
+1. 和ShownX的实现方式相比，使用gluon.nn.Embedding的方式更加简洁，而且运行效率更高（训练耗时更短）。
 
-1. 使用不同的损失函数进行训练后模型在验证集上的准确率如下：
+2. 使用不同的损失函数进行训练后模型在验证集上的准确率如下：
 
 | loss / evaluation method | class prediction | KNN search |
-| ---- | :--:| ---- |
+| :--: | :--:| :--: |
 | softmax | 0.9855 | - |
 | softmax + center loss | 0.9873 | 0.9823 |
 | center loss | 0.9872 | 0.9851 |
 
-P.S. 训练参数：epoch=30, lr=0.1, lr_step=10, lr_factor=0.1, batch_size=128, wd=1E-4, lmbd=1, alpha=0.5
+使用softmax+center loss进行训练，模型的准确率相比使用softmax进行训练时大约有了0.0018的提升；使用center loss进行训练后模型准确率略有下降。
+使用KNN search对图像进行分类的准确率要低于使用模型直接输出的类别概率。
+使用center loss进行单独训练后，KNN search的准确率有了相对较大的提升，表现在feature map中即feature的聚集性变好。
+
+P.S. 通过一系列的试验发现，使用softmax+center loss训练10个epoch，然后使用center loss训练30个epoch得到的模型的准确率最高，结果可达99.85%。
+
+P.P.S. 训练参数：epoch=30, lr=0.1, lr_step=10, lr_factor=0.1, batch_size=128, wd=1E-4, lmbd=1, alpha=0.5
+
+3. 不同损失函数训练后模型的feature map如下所示：
+![](/output/)
 
 ## 背景
 
