@@ -218,7 +218,7 @@ def test():
     _, test_iter = data_loader(args.batch_size)
     
     model = LeNetPlus()
-    model.load_parameters(os.path.join(args.ckpt_dir, args.prefix + "-second-best.params"), ctx=ctx, allow_missing=True)
+    model.load_parameters(os.path.join(args.ckpt_dir, args.prefix + "-best.params"), ctx=ctx, allow_missing=True)
     # 
     center_net = CenterLoss(num_classes=args.num_classes, feature_size=args.feature_size, lmbd=args.lmbd, ctx=mx.cpu())
     center_net.load_parameters(os.path.join(args.ckpt_dir, args.prefix + "-feature_matrix.params"), ctx=ctx)
