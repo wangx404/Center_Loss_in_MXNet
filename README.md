@@ -26,30 +26,21 @@ P.S. 通过一系列的试验发现，使用softmax+center loss训练10个epoch�
 
 P.P.S. 训练参数：epoch=30, lr=0.1, lr_step=10, lr_factor=0.1, batch_size=128, wd=1E-4, lmbd=1, alpha=0.5
 
-3. 不同损失函数训练后模型的feature map如下所示：
-softmax training:
-![](/output/softmax_train.gif)
+3. 不同损失函数训练后模型的feature map如下所示（从上到下依次为softmax, softmax+center loss, center loss)：
 
-softmax testing:
-![](/output/softmax_test.gif)
+feature map of training dataset
+![](/output/train_feature_map_with_different_loss.jpg)
 
-softmax + center loss training:
-![](/output/center_loss_train.gif)
-
-softmax + center loss testing:
-![](/output/center_loss_test.gif)
-
-center loss training:
-![](/output/center_loss_second_train.gif)
-
-center loss testing:
-![](/output/center_loss_second_test.gif)
+feature map of test dataset
+![](/output/test_feature_map_with_different_loss.jpg)
 
 可以看出，使用softmax进行训练时，feature map呈现为放射状（在交叉熵损失函数的优化下，只要类别间具有能够区分的margin即可）。
 而使用softmax+center loss训练之后，因为center loss会约束features向类中心特征聚集，因此最后feature map呈现为放射状和点簇状的折中状态。
 而经过center loss单独的训练后，feature map中的点簇分布得更加密集。
 
-P.S. 目前在face recognition中主流的损失函数仍然是softmax的各种改型。添加regulation可以将放射状的feature map约束在更小的范围内；添加基于欧氏距离或者余弦距离的损失可以改变feature map的分布特征；对loss进行分段病添加不同的权重，可以在数据集上实现更好的结果（然而换个数据集就没有卵用了）。
+P.S. 训练过程中feature map的变化可参照output中的gif文件。
+
+P.P.S. 目前在face recognition中主流的损失函数仍然是softmax的各种改型。添加regulation可以将放射状的feature map约束在更小的范围内；添加基于欧氏距离或者余弦距离的损失可以改变feature map的分布特征；对loss进行分段病添加不同的权重，可以在数据集上实现更好的结果（然而换个数据集就没有卵用了）。
 
 ## 背景
 
