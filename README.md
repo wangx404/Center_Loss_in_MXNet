@@ -42,7 +42,10 @@ P.S. 训练过程中feature map的变化可参照output中的gif文件。
 
 P.P.S. 目前在face recognition中主流的损失函数仍然是softmax的各种改型。添加regulation可以将放射状的feature map约束在更小的范围内；添加基于欧氏距离或者余弦距离的损失可以改变feature map的分布特征；对loss进行分段病添加不同的权重，可以在数据集上实现更好的结果（然而换个数据集就没有卵用了）。
 
-P.P.P.S. **一个有意思的特征分布，本代码和ShownX的代码中4和8两个数字的feature map都位于图中心（在不同的训练中，4和8一直位于正中，而其他的数字在外围的位置则在持续变化。）；而在center loss的原始论文中，十个数字的feature map组成了一个环形。参考其他的代码可知，将feature和class输出层（Dense Layer）中的use_bias设置为False之后，就能够完美复现center loss原始论文中的环形分布。**
+P.P.P.S. 
+  **一个有意思的特征分布，本代码和ShownX的代码中4和8两个数字的feature map都位于图中心（在不同的训练中，4和8一直位于正中，而其他的数字在外围的位置则在持续变化。）。参考其他的代码可知，将feature和class输出层（Dense Layer）中的use_bias设置为False之后，就能够完美复现center loss原始论文中的环形分布。**
+  **而且经过这样的修改后，使用class prediction和KNN search之间的准确率差距消失。**
+  **而且，这样修改之后经过center loss的单独训练后feature map更偏向于圆形点簇。**
 
 ## 背景
 
