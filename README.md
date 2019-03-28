@@ -10,11 +10,13 @@
 ## 结果讨论
 
 1. 使用不同的损失函数进行训练后模型在验证集上的准确率如下：
+
 | loss / evaluation method | class prediction | KNN search |
 | ---- | :--:| ---- |
 | softmax | 0.9855 | - |
 | softmax + center loss | 0.9873 | 0.9823 |
 | center loss | 0.9872 | 0.9851 |
+
 P.S. 训练参数：epoch=30, lr=0.1, lr_step=10, lr_factor=0.1, batch_size=128, wd=1E-4, lmbd=1, alpha=0.5
 
 ## 背景
